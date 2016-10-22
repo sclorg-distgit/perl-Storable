@@ -5,7 +5,7 @@
 Name:           %{?scl_prefix}perl-Storable
 Epoch:          1
 Version:        2.56
-Release:        366%{?dist}
+Release:        367%{?dist}
 Summary:        Persistence for Perl data structures
 License:        GPL+ or Artistic
 Group:          Development/Libraries
@@ -15,6 +15,8 @@ Source0:        http://www.cpan.org/authors/id/A/AM/AMS/Storable-%{base_version}
 Patch0:         Storable-2.51-Upgrade-to-2.53.patch
 # Unbundled from perl 5.24.0
 Patch1:         Storable-2.53-Upgrade-to-2.56.patch
+# Avoid loading optional modules from default . (CVE-2016-1238)
+Patch2:         Storable-2.56-CVE-2016-1238-avoid-loading-optional-modules-from.patch
 BuildRequires:  %{?scl_prefix}perl
 BuildRequires:  %{?scl_prefix}perl-devel
 BuildRequires:  %{?scl_prefix}perl-generators
@@ -68,6 +70,7 @@ can be conveniently stored to disk and retrieved at a later time.
 %setup -q -n Storable-%{base_version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 # Remove bundled modules
 rm -rf t/compat
 sed -i -e '/^t\/compat\//d' MANIFEST
@@ -93,6 +96,9 @@ find $RPM_BUILD_ROOT -type f -name '*.bs' -size 0 -exec rm -f {} \;
 %{_mandir}/man3/*
 
 %changelog
+* Wed Aug 03 2016 Jitka Plesnikova <jplesnik@redhat.com> - 1:2.56-367
+- Avoid loading optional modules from default . (CVE-2016-1238)
+
 * Mon Jul 11 2016 Petr Pisar <ppisar@redhat.com> - 1:2.56-366
 - SCL
 
